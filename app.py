@@ -4,10 +4,8 @@ import config
 import logging
 from model import GroupingTable, PhoneTable, ManagmentTable, Fallow_up_type, ReadyMessage
 from functions import Send_message
-from persiantools.jdatetime import JalaliDate
 from datetime import datetime
 from peewee import IntegrityError
-from jdatetime import datetime as jdatetime
 
 # ساخت اپلیکیشن Flask
 app = Flask(__name__)
@@ -80,29 +78,17 @@ def index():
         return redirect(url_for("login"))
 
     groups = GroupingTable.select()
-    success_message = None
-    error_message = None
 
     if request.method == "POST":
         name = request.form["name"]
         description = request.form["description"]
         group_id = request.form["group_id"]
-
-        if not group_id:
-            error_message = "لطفاً نوع فعالیت را انتخاب کنید."
-            groups = GroupingTable.select()
-            return render_template("index.html", groups=groups, error_message=error_message)
-
         phone = request.form["phone"]
         no_send = request.form.get("no_send")
 
-        if no_send:
-            success_message = "اطلاعات با موفقیت ذخیره شد. پیام ارسال نشد."
-        else:
-            message = name + '\n' + request.form["message"]
-            send = Send_message(phone, message)
-            send.send_message()
-            success_message = "اطلاعات با موفقیت ذخیره شد و پیام ارسال شد."
+        if not group_id:
+            error_message = "لطفاً نوع فعالیت را انتخاب کنید."
+            return render_template("index.html", groups=groups, error_message=error_message)
 
         try:
             PhoneTable.create(
@@ -111,18 +97,32 @@ def index():
                 phone_number=phone,
                 description=description,
             )
+
+            if not no_send:
+                message = name + '\n' + request.form["message"]
+                send = Send_message(phone, message)
+                send.send_message()
+                session['success_message'] = "اطلاعات با موفقیت ذخیره شد و پیام ارسال شد."
+            else:
+                session['success_message'] = "اطلاعات با موفقیت ذخیره شد. پیام ارسال نشد."
+
         except Exception as e:
             logging.error(f"خطا در ذخیره اطلاعات: {e}")
-            error_message = "خطا در ذخیره اطلاعات."
+            session['error_message'] = "خطا در ذخیره اطلاعات."
 
-        return render_template("index.html", groups=groups, success_message=success_message)
+        # 🔄 جلوگیری از ارسال مجدد با رفرش
+        return redirect(url_for("index"))
 
-    return render_template("index.html", groups=groups)
+    # GET method
+    success_message = session.pop("success_message", None)
+    error_message = session.pop("error_message", None)
+    return render_template("index.html", groups=groups, success_message=success_message, error_message=error_message)
+
 
 # مشاهده لیست شماره‌ها و پیگیری‌های مربوطه
 @app.route('/phones')
 def phone_list():
-    phones = PhoneTable.select().join(GroupingTable)
+    phones = PhoneTable.select().join(GroupingTable).order_by(PhoneTable.id.desc())
     first_followups = {}
     for followup in ManagmentTable.select().order_by(ManagmentTable.id.asc()):
         if followup.id_PhT.id not in first_followups:
@@ -293,4 +293,4 @@ def delete_group(group_id):
 
 # اجرای اپلیکیشن
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

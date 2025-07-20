@@ -54,9 +54,10 @@ body, html {
     }
 }
 .card {
-    width: 100%; /* Make the card take full width of its container */
-    overflow: auto; /* Allow vertical scrolling if content overflows */
+    max-height: 90vh;  /* حداکثر ارتفاع کمتر از کل ویوپورت */
+    overflow-y: auto;  /* اسکرول داخلی فقط زمانی که نیاز باشد */
 }
+
 textarea {
     resize: vertical; /* Allow vertical resizing only */
     overflow: auto; /* Ensure scrollbar appears if text overflows */
@@ -95,4 +96,49 @@ textarea {
 .btn:active {
     top: 2px;
     box-shadow: 0 2px 0 #666;
+}
+@media (max-width: 576px) {
+    body {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .card h2 {
+       font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        font-size: 0.85rem;
+    }
+
+    .form-control,
+    .btn,
+    #selectedGroup {
+        font-size: 0.85rem;
+        padding: 0.45rem 0.65rem;
+    }
+
+    .btn-outline-secondary {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.5rem;
+    }
+}
+.center-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px 0;
+    box-sizing: border-box;
+}
+@media (max-height: 700px) {
+    .card {
+        max-height: 85vh;
+        padding: 1rem;
+    }
+
+    body {
+        padding: 0 !important;
+    }
 }
