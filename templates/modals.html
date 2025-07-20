@@ -1,0 +1,146 @@
+<!-- modals.html -->
+
+<!-- مودال: ثبت پیگیری جدید برای یک شماره تماس -->
+<div class="modal fade" id="followUpModal" tabindex="-1" aria-labelledby="followUpModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-sm rounded-4">
+
+      <!-- فرم پیگیری -->
+      <form id="followUpForm" class="needs-validation" novalidate>
+
+        <!-- سربرگ مودال -->
+        <div class="modal-header bg-primary text-white rounded-top-4">
+          <h5 class="modal-title" id="followUpModalLabel">ثبت پیگیری</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <!-- بدنه مودال شامل فرم ورود اطلاعات -->
+        <div class="modal-body py-4">
+          <!-- فیلد پنهان برای نگهداری شناسه شماره -->
+          <input type="hidden" name="phone_id" id="phone_id" />
+
+          <!-- انتخاب تاریخ پیگیری مجدد با استفاده از تاریخ شمسی -->
+          <div class="mb-4">
+            <label for="follow_up_date" class="form-label fw-semibold">تاریخ پیگیری مجدد</label>
+            <input
+              type="text"
+              class="form-control"
+              id="follow_up_date"
+              name="follow_up_date"
+              autocomplete="off"
+              placeholder="تاریخ شمسی را انتخاب کنید"
+            />
+          </div>
+
+          <!-- انتخاب نوع پیگیری به همراه دکمه مدیریت انواع پیگیری -->
+          <div class="mb-4 d-flex align-items-center gap-2">
+            <label for="follow_up_type_id" class="form-label fw-semibold mb-0 flex-shrink-0" style="min-width: 120px;">نوع پیگیری</label>
+            <select class="form-select flex-grow-1" name="follow_up_type_id" id="follow_up_type_id" required>
+              <option value="">انتخاب کنید</option>
+            </select>
+            <button
+              id="manageFollowUpTypesBtn"
+              type="button"
+              class="btn btn-outline-primary btn-sm shadow-sm"
+              style="font-weight: 600; border-radius: 8px;"
+            >
+              مدیریت نوع پیگیری
+            </button>
+          </div>
+
+          <!-- فیلد توضیحات پیگیری -->
+          <div class="mb-4">
+            <label for="description" class="form-label fw-semibold">توضیحات</label>
+            <textarea
+              class="form-control"
+              name="description"
+              id="description"
+              rows="4"
+              required
+              placeholder="توضیحات مربوط به پیگیری را وارد کنید"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- دکمه‌های پایین فرم -->
+        <div class="modal-footer pt-3">
+          <button type="submit" class="btn btn-success btn-lg px-4 shadow-sm">ثبت</button>
+          <button type="button" class="btn btn-secondary btn-lg px-4 shadow-sm" data-bs-dismiss="modal">بستن</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- مودال: مدیریت نوع‌های پیگیری (افزودن / حذف) -->
+<div class="modal fade" id="manageFollowUpTypesModal" tabindex="-1" aria-labelledby="manageFollowUpTypesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-light">
+
+      <!-- سربرگ مودال -->
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="manageFollowUpTypesModalLabel">مدیریت نوع پیگیری</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+      </div>
+
+      <!-- بدنه مودال: لیست و فرم اضافه کردن -->
+      <div class="modal-body">
+        <!-- لیست انواع پیگیری موجود -->
+        <ul class="list-group mb-3" id="followUpTypesList"></ul>
+
+        <!-- فرم افزودن نوع پیگیری جدید -->
+        <div class="input-group">
+          <input type="text" class="form-control" id="newFollowUpType" placeholder="نوع پیگیری جدید را وارد کنید">
+          <button class="btn btn-primary" id="addFollowUpTypeBtn">افزودن</button>
+        </div>
+
+        <!-- پیام‌های وضعیت -->
+        <div id="manageTypeMsg" class="mt-2"></div>
+      </div>
+
+      <!-- دکمه بستن پایین مودال -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- مودال: نمایش تاریخچه پیگیری‌های انجام‌شده برای یک شماره تماس -->
+<div class="modal fade" id="showFollowUpModal" tabindex="-1" aria-labelledby="showFollowUpModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- سربرگ مودال -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="showFollowUpModalLabel">پیگیری‌ها</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+      </div>
+
+      <!-- بدنه مودال شامل جدول پیگیری‌ها -->
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped text-center" id="followUpTable">
+            <thead class="table-light">
+              <tr>
+                <th>تاریخ ثبت</th>
+                <th>نوع پیگیری</th>
+                <th>توضیحات</th>
+                <th>تاریخ پیگیری مجدد</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- ردیف‌های پیگیری به صورت داینامیک توسط جاوااسکریپت اضافه می‌شوند -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- دکمه بستن پایین مودال -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+      </div>
+    </div>
+  </div>
+</div>

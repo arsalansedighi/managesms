@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود به سیستم</title>
+
+    <!-- لینک به فایل CSS Bootstrap نسخه RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light d-flex justify-content-center align-items-center vh-100">
+
+    <!-- کانتینر اصلی فرم ورود -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+
+                <!-- کارت ورود -->
+                <div class="card shadow-lg rounded-3 p-4">
+                    <h2 class="text-center mb-4">🔐 ورود به سیستم</h2>
+
+                    <!-- فرم ورود با متد POST -->
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="password" class="form-label">رمز عبور</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="رمز عبور را وارد کنید" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">ورود</button>
+                    </form>
+
+                    <!-- نمایش پیام خطا (در صورت وجود) -->
+                    {% if error %}
+                        <div class="alert alert-danger text-center mt-3" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+                    <!-- دکمه باز کردن مودال تغییر رمز عبور -->
+                    <div class="text-center mt-3">
+                        <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#changePasswordModal">تغییر رمز عبور</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تغییر رمز عبور -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- سربرگ مودال -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">تغییر رمز عبور</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- بدنه مودال شامل فرم تغییر رمز -->
+                <div class="modal-body">
+                    <form method="post">
+                        <!-- رمز قدیمی -->
+                        <div class="mb-3">
+                            <label for="old_password" class="form-label">رمز عبور قدیمی</label>
+                            <input type="password" id="old_password" name="old_password" class="form-control" placeholder="رمز عبور قدیمی را وارد کنید" required>
+                        </div>
+
+                        <!-- رمز جدید -->
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">رمز جدید</label>
+                            <input type="password" id="new_password" name="new_password" class="form-control" placeholder="رمز جدید را وارد کنید" required>
+                        </div>
+
+                        <!-- تکرار رمز جدید -->
+                        <div class="mb-3">
+                            <label for="confirm_new_password" class="form-label">تایید رمز جدید</label>
+                            <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" placeholder="رمز جدید را دوباره وارد کنید" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">ذخیره رمز جدید</button>
+                    </form>
+
+                    <!-- نمایش پیام خطا (در صورت وجود) -->
+                    {% if error_message %}
+                        <div class="alert alert-danger text-center mt-3" role="alert">
+                            {{ error_message }}
+                        </div>
+                    {% endif %}
+
+                    <!-- نمایش پیام موفقیت (در صورت وجود) -->
+                    {% if success_message %}
+                        <div class="alert alert-success text-center mt-3" role="alert">
+                            {{ success_message }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- اسکریپت Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
