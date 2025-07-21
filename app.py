@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import hashlib
 import config
 import logging
-from model import GroupingTable, PhoneTable, ManagmentTable, Fallow_up_type, ReadyMessage
+from model import database, GroupingTable, PhoneTable, ManagmentTable, Fallow_up_type, ReadyMessage
 from functions import Send_message
 from datetime import datetime
 from peewee import IntegrityError
@@ -11,7 +11,16 @@ from peewee import IntegrityError
 app = Flask(__name__)
 app.secret_key = "your_secret_key"  # بهتر است در فایل env ذخیره شود و خوانده شود
 
-# تابع هش کردن رمز عبور با الگوریتم SHA256
+# تابع هش کردن رمز عبور با الگوریتم SHA256@app.before_request
+def before_request():
+    if database.is_closed():
+        database.connect()
+
+@app.teardown_request
+def teardown_request(exception):
+    if not database.is_closed():
+        database.close()
+
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -289,8 +298,5 @@ def delete_group(group_id):
     except GroupingTable.DoesNotExist:
         return jsonify({'message': 'گروه یافت نشد'}), 404
 
-
-
-# اجرای اپلیکیشن
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -61,6 +61,8 @@ with database:
     database.execute_sql("SET NAMES utf8mb4;")
     database.create_tables([GroupingTable, PhoneTable, ManagmentTable, Fallow_up_type, ReadyMessage])
 
+__all__ = ['database', 'GroupingTable', 'PhoneTable', 'ManagmentTable', 'Fallow_up_type', 'ReadyMessage']
+
 
 def validate_phone(value):
     pattern = r"^(?:\+98|0098|98|0)?(9\d{9})$"
